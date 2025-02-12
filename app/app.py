@@ -6,7 +6,7 @@ from app.models.user import bcrypt , User
 from app.routes.auth_routes import auth_bp
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
-print(db.engine.table_names())
+
 def create_app():
     app = Flask(__name__)
     bcrypt = Bcrypt(app)

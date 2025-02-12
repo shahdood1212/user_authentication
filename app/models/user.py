@@ -19,7 +19,7 @@ class User(db.Model):
     def __init__(self, username, email, password, role, first_name, last_name, phone_number):
         self.username = username
         self.email = email
-        self.set_password(password)  # ✅ تشفير كلمة المرور
+        self.set_password(password)  
         self.role = role
         self.first_name = first_name
         self.last_name = last_name

@@ -24,7 +24,7 @@ class AuthService:
 
     def authenticate_user(db, username, password):
         user = db.query(User).filter_by(username=username).first()  
-        if user and user.check_password(password):  # ✅ استخدم التابع داخل User
+        if user and user.check_password(password):  
             token = "mocked_token"  
             return user, token
         return None, None
@@ -42,7 +42,7 @@ class AuthService:
             last_name=data.get('last_name', ''),
             phone_number=data.get('phone_number', '')
         )
-        user.set_password(data['password'])  # ✅ تشفير كلمة المرور
+        user.set_password(data['password'])  
 
         db.session.add(user)
         db.session.commit()
@@ -51,7 +51,7 @@ class AuthService:
     @staticmethod
     def authenticate_user(db, username, password):
         user = db.query(User).filter_by(username=username).first()
-        if user and user.check_password(password):  # ✅ استخدام `check_password()`
+        if user and user.check_password(password):  
             token = "mocked_token"  
             return user, token
         return None, None
