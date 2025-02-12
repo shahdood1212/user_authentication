@@ -1,20 +1,29 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_bcrypt import Bcrypt
 from app.config.database import db
+from datetime import datetime
 
 bcrypt = Bcrypt()
 
 class User(db.Model):
     __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
+    
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)  
-    phone_number = db.Column(db.String(20), unique=True, nullable=False)  
-    password_hash = db.Column(db.String(256), nullable=False)
-    role = db.Column(db.String(50), nullable=False)
-    first_name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(50), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    role = db.Column(db.String(20), nullable=False, default="patient", 
+                     check_constraint="role IN ('patient', 'doctor', 'admin')")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    patient = db.relationship("Patient", back_populates="user", uselist=False)
+    doctor = db.relationship("Doctor", back_populates="user", uselist=False)
+    files = db.relationship("File", back_populates="uploader", lazy="dynamic")
+    chat_sessions = db.relationship("ChatSession", back_populates="user", lazy="dynamic")
+    user_sessions = db.relationship("UserSession", back_populates="user", lazy="dynamic")
+    audit_logs = db.relationship("AuditLog", back_populates="user", lazy="dynamic")
+   
     def to_dict(self):
         return {
             "id": self.id,
