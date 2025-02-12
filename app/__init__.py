@@ -2,10 +2,15 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from app.config import Config
-from app.config.database import db
-from app.models.user import bcrypt
+from flask_bcrypt import Bcrypt
+
+from app.config.config import Config
+from app.config.database import db, init_db
 from app.routes.auth_routes import auth_bp
+
+bcrypt = Bcrypt()
+jwt = JWTManager()
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -13,11 +18,12 @@ def create_app():
 
     db.init_app(app)
     bcrypt.init_app(app)
-    jwt = JWTManager(app)
-    migrate = Migrate(app, db)  
-    
-    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    JWTManager(app)
+    Migrate(app, db)
 
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    init_db(app)
+    
     with app.app_context():
         db.create_all()  
     return app
